@@ -1,0 +1,543 @@
+<h1 id="hello-test">hello test</h1>
+<div class="marked title"><div>sssss</div></div>
+<div class="marked tags"><div>wwww</div><div>fffff</div><div>python</div></div>
+<div class="marked create"><div>dddd</div></div>
+<div class="marked update"><div>ddd</div></div>
+<div class="marked count"><div>dddd</div></div>
+<div class="marked catalog"><div>dd</div></div>
+<hr>
+<h1 id="jjjejee">jjjejee</h1>
+<h1 id="-docker-engine-https-docs-docker-com-engine-userguide-"><a href="https://docs.docker.com/engine/userguide/">Docker Engine 新手指南</a></h1>
+<p><strong>docker</strong> 是一个开源引擎，它的目的是帮助各种应用程序，快捷地创建轻量的、可移植的、自给自足的容器。你甚至可以在笔记本上编译测试，然后将其部署在生产环境，包括虚拟机、裸设备、OpenStack 集群、或者任何基础平台。</p>
+<p><strong>docker</strong> 通常用在以下场景：</p>
+<ul>
+<li><p>自动打包和部署 web 应用</p>
+</li>
+<li><p>自动化测试和持续集成、部署</p>
+</li>
+<li><p>部署和调整数据库及其后台服务</p>
+</li>
+<li><p>从头编译或者扩展现有的 OpenShift 或 Cloud Foundry 平台，来搭建自己的 PaaS 环境</p>
+</li>
+</ul>
+<h2 id="ubuntu-">Ubuntu 支持</h2>
+<p><strong>docker</strong> 支持以下 Ubuntu 版本</p>
+<ul>
+<li>Ubuntu Trusty 14.04 (LTS) (64-bit)</li>
+<li>Ubuntu Precise 12.04 (LTS) (64-bit)</li>
+<li>Ubuntu Raring 13.04 and Saucy 13.10 (64 bit)</li>
+</ul>
+<p><strong>docker</strong> 需要 64 位版本的 Ubuntu。此外，其 Linux 内核版本不低于 3.10。</p>
+<p>使用 <code>$ uname -r</code> 查看你的 Linux 内核版本。Trusty 14.04 (LTS) 不需要任何安装条件，Precise 12.04 (LTS)需要升级内核到 3.10 以上：</p>
+<pre><code class="lang-sh">$ sudo apt-get update
+$ sudo apt-get install linux-image-generic-lts-trusty linux-headers-generic-lts-trusty
+$ sudo reboot
+</code></pre>
+<h2 id="ubuntu-">Ubuntu 安装</h2>
+<p>这个安装过程是写给那些对软件包管理器不熟悉的用户看的。如果你熟悉软件包管理器，不喜欢使用 <strong>wget</strong>，或者有安装问题，请使用我们的 <strong>apt</strong> 和 <strong>yum</strong> 仓库来安装。</p>
+<ol>
+<li><p>使用 <code>sodu</code> 作为特权用户进入你的 <strong>shell</strong></p>
+</li>
+<li><p>看看有没有 <strong>wget</strong></p>
+<pre><code class="lang-sh">$ which wget
+</code></pre>
+<p>如果没有，请更新下软件包管理器，然后安装 <strong>wget</strong></p>
+<pre><code class="lang-sh">$ sudo apt-get update
+$ sudo apt-get install wget
+</code></pre>
+<p>或者</p>
+<pre><code>$ sudo aptitude install wget
+</code></pre></li>
+<li><p>下载最新的 <strong>docker</strong> 包</p>
+<pre><code class="lang-sh">$ wget -qO- https://get.docker.com/ | sh  # 下载安装脚本，然后运行脚本
+</code></pre>
+<p>系统会提示你输入密码，然后，程序会下载并安装 <strong>docker</strong> 和依赖。</p>
+<blockquote>
+<p>注意：如果你的公司存在过滤代理，你会发现在安装时出现 <code>apt-key</code> 命令项失败。使用下面的法子，解决这个问题：</p>
+<pre><code class="lang-sh">$ wget -qO- https://get.docker.com/gpg | sudo apt-key add -
+</code></pre>
+</blockquote>
+</li>
+<li><p>看看 <strong>docker</strong> 是否装好了</p>
+<pre><code class="lang-sh">$ sudo docker run hello-world   # 下载一个测试镜像，并在容器内运行这个镜像
+</code></pre>
+</li>
+</ol>
+<h2 id="-">什么是镜像，什么是容器</h2>
+<p><code>docker run hello-world</code> 这条命令，使用 <strong>docker</strong> 完成一条核心任务。这条命令有三部分：</p>
+<ul>
+<li><p><code>docker</code> 告诉操作系统：你正在使用 <strong>docker</strong> 程序</p>
+</li>
+<li><p><code>run</code> 创建并运行一个容器</p>
+</li>
+<li><p><code>hello-world</code> 告诉 <strong>docker</strong>：将该镜像加载进容器</p>
+</li>
+</ul>
+<p>一个容器，其实是一个基础版本的 Linux 操作系统。镜像，是你加载进容器的软件。当你运行这条命令，<strong>docker</strong>：</p>
+<ul>
+<li><p>检查看看你是否有 hello-world 这个软件镜像</p>
+</li>
+<li><p>从 docker Hub 下载这个镜像</p>
+</li>
+<li><p>将该镜像加载进容器，然后运行</p>
+</li>
+</ul>
+<p>根据镜像的编译，镜像可能会运行一条简单的、单一的命令，然后退出。hello-world 就是这么干的。</p>
+<p><strong>docker</strong> 镜像，非常灵活。它可以作为一个复杂的数据库启动，等待你加入数据，然后存储数据。</p>
+<p>谁负责构建 hello-world 镜像？在上面的例子，是由 <strong>docker</strong> 构建的，但是其他任何人都可以构建。<strong>docker</strong> 帮助人们（或公司）通过镜像创建和分享软件。使用 <strong>docker</strong>，你不用担心你的电脑是否可以运行镜像中的软件---<strong>docker</strong> 容器总能运行它。</p>
+<h2 id="-">找到镜像，然后运行</h2>
+<p>世界各地的人们在构建 <strong>docker</strong> 镜像。你可以浏览 <a href="https://hub.docker.com/">docker Hub</a> 找到这些镜像。这里，我们来聊聊怎么找镜像。</p>
+<h3 id="-">第一步：定位镜像</h3>
+<ol>
+<li><p>打开你的浏览器，然后浏览 <a href="https://hub.docker.com/">docker Hub</a> </p>
+<p><img src="https://docs.docker.com/tutimg/hub_signup.png" alt="docker Hub"> </p>
+<p><a href="https://hub.docker.com/">docker Hub</a> 包含了多种多样的镜像，有个人的，有 RedHat、IBM、Google 等组织官方发布的，我们有一大堆。</p>
+</li>
+<li><p>点击 Search 搜索框。</p>
+</li>
+<li><p>输入关键字，比如 whalesay，然后你能得到如下：</p>
+<p><img src="https://docs.docker.com/tutimg/image_found.png" alt="whalesay"></p>
+</li>
+<li><p>点击 docker/whalesay 镜像，然后会显示这个镜像的库：</p>
+<p><img src="https://docs.docker.com/tutimg/whale_repo.png" alt="docker/whalesay"></p>
+<p>每个镜像库包含一个镜像的信息。它应该包括这些信息：包含的时什么样的软件，以及如何使用它。你可能注意到 whalesay 镜像是基于 Ubuntu 的。</p>
+</li>
+</ol>
+<h3 id="-">第二步：运行镜像</h3>
+<ol>
+<li><p>打开你的控制终端。</p>
+</li>
+<li><p>输入 <code>docker run docker/whalesay cowsay boo</code> 命令，按下回车。这条命令会在一个容器运行 whalesay 镜像。你的终端会出现以下显示：</p>
+<pre><code class="lang-sh">$ sudo docker run docker/whalesay cowsay boo 
+Unable to find image &#39;docker/whalesay:latest&#39; locally
+latest: Pulling from docker/whalesay
+2880a3395ede: Pull complete 
+515565c29c94: Pull complete 
+98b15185dba7: Pull complete 
+2ce633e3e9c9: Pull complete 
+35217eff2e30: Pull complete 
+326bddfde6c0: Pull complete 
+3a2e7fe79da7: Pull complete 
+517de05c9075: Pull complete 
+8f17e9411cf6: Pull complete 
+ded5e192a685: Pull complete 
+Digest: sha256:178598e51a26abbc958b8a2e48825c90bc22e641de3d31e18aaf55f3258ba93b
+Status: Downloaded newer image for docker/whalesay:latest
+_____ 
+&lt; boo &gt;
+----- 
+  \
+  \
+   \     
+          ##        .            
+       ## ## ##       ==            
+     ## ## ## ##      ===            
+   /&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;___/ ===        
+ ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+   \______ o          __/            
+    \    \        __/             
+     \____\______/
+</code></pre>
+<p>如果你是第一次运行软件镜像，<strong>docker</strong> 命令会先查找你的本地系统。如果找不到镜像，就会去 Hub 查找。</p>
+</li>
+<li><p>输入 <code>docker images</code> 命令，按下回车。这条命令列出你本地系统的所有镜像，你应该看到 docker/whalesay ：</p>
+<pre><code class="lang-sh">$ sudo docker images
+REPOSITORY         TAG       IMAGE ID        CREATED         VIRTUAL SIZE
+hello-world        latest    0a6ba66e537a    3 months ago    960 B
+docker/whalesay    latest    ded5e192a685    7 months ago    247 MB
+</code></pre>
+<p>当你在一个容器运行镜像时，<strong>Dorcker</strong> 会适时为你的电脑下载镜像。这样做，可以为你留下本地副本。<strong>Dorcker</strong> 只会下载 Hub 上修改的镜像源。当然了，你也可以删除镜像。</p>
+</li>
+<li><p>我们来玩会 whalesay 和它的容器：</p>
+</li>
+</ol>
+<pre><code class="lang-sh">   $ sudo docker run docker/whalesay cowsay boo-boo
+   $ sudo docker run docker/whalesay cowsay boo-boo
+    _________ 
+   &lt; boo-boo &gt;
+    --------- 
+     \
+      \
+      \     
+             ##        .            
+          ## ## ##       ==            
+         ## ## ## ##      ===            
+       /&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;___/ ===        
+    ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+       \______ o          __/            
+       \    \        __/             
+        \____\______/
+</code></pre>
+<p>###</p>
+<h2 id="-">编译你自己的镜像</h2>
+<p>我们可以对 whalesay 镜像进行改良。现在它还不会说话，本节我们来改良它，让它可以说话。</p>
+<h3 id="-dockerfile">第一步：写一个  Dockerfile</h3>
+<p>用你喜欢的编辑器写一个 Dockerfile。Dockerfile 描述软件如何放入镜像，指定运行环境和运行命令。</p>
+<ol>
+<li><p>打开你的控制终端。</p>
+</li>
+<li><p>输入 <code>mkdir mydockerbuild</code> 创建一个目录：</p>
+<pre><code class="lang-sh">$ sudo mkdir mydockerbuild
+</code></pre>
+<p>我们打算用这个目录来存放编译的文件。</p>
+</li>
+<li><p>进入 mydockerbuild 目录：</p>
+<pre><code class="lang-sh">$ cd mydockerbuild
+</code></pre>
+<p>现在它还是空的。</p>
+</li>
+<li><p>在当前目录创建一个文件，名字叫 Dockerfile 。提示：你可以用 <strong> vi </strong> 或 <strong> nano </strong> 完成。</p>
+</li>
+<li><p>打开你的 Dockerfile 。</p>
+</li>
+<li><p>加入一行：</p>
+<pre><code class="lang-docker">FROM docker/whalesay:latest
+</code></pre>
+<p><code>FROM</code> 是一个关键字，告诉 <strong>docker</strong> 你的镜像依赖哪个镜像。whalesay 很小巧，并且已经有 <strong>cowsay</strong> 程序了，所以我们从这里开始。</p>
+</li>
+<li><p>现在，把 <strong>fortunes</strong> 程序加入镜像：</p>
+<pre><code class="lang-docker">RUN apt-get -y update &amp;&amp; apt-get install -y fortunes
+</code></pre>
+<p><strong>fortunes</strong> 程序有一个命令，可以随机打印一句话。第一步是安装它，第二步是把它安装到镜像。</p>
+</li>
+<li><p>一旦镜像完成所需要的，当镜像加载时，通知软件运行：</p>
+<pre><code class="lang-docker">CMD /usr/games/fortune -a | cowsay
+</code></pre>
+<p>这一行告诉 <strong>fortune</strong> 程序，把生成的话传给 <strong>cowsay</strong>。</p>
+</li>
+<li><p>看看你的文件，看起来应该像：</p>
+<pre><code class="lang-docker">FROM docker/whalesay:latest
+RUN apt-get -y update &amp;&amp; apt-get install -y fortunes
+CMD /usr/games/fortune -a | cowsay
+</code></pre>
+</li>
+<li><p>保存关闭 Dockerfile。现在，我们有了一个完备的 Dockerfile，接下来编译它。</p>
+</li>
+</ol>
+<h3 id="-dockerfile-">第二步：从 Dockerfile 编译一个镜像</h3>
+<ol>
+<li><p>输入 <code>docker build -t docker-whale</code> 命令，编译你的新镜像（不要漏掉 .）：</p>
+<pre><code class="lang-sh">$ sudo docker build -t docker-whale .
+Sending build context to docker daemon 158.8 MB
+...snip...
+Removing intermediate container a8e6faa88df3
+Successfully built 7d9495d03763
+</code></pre>
+<p>这个命令会花费几秒钟，并报告结果。在把玩新镜像前，先来聊聊 Dockerfile 的编译过程。</p>
+</li>
+</ol>
+<h3 id="-">第三步：编译过程</h3>
+<p><code>docker build -t docker-whale .</code> 命令会编译当前目录的 Dockerfile，并在本地机器生成一个称为 docker-whale 的镜像。编译过程稍微有点长，并输出一些信息。</p>
+<p>首先，<strong>docker</strong> 检查是否符合编译要求：</p>
+<pre><code class="lang-sh">Sending build context to docker daemon 158.8 MB
+</code></pre>
+<p>然后，<strong>docker</strong> 加载 whalesay 镜像。因为之前已经有了 whalesay 镜像，所以 <strong>docker</strong> 不需要下载它：</p>
+<pre><code class="lang-sh">Step 0 : FROM docker/whalesay:latest
+ ---&gt; fb434121fc77
+</code></pre>
+<p><strong>docker</strong> 移动到下一步，更新 <strong>ape-get</strong> 包管理器。这会输出很多行：</p>
+<pre><code class="lang-sh">Step 1 : RUN apt-get -y update &amp;&amp; apt-get install -y fortunes
+ ---&gt; Running in 27d224dfa5b2
+Ign http://archive.ubuntu.com trusty InRelease
+Ign http://archive.ubuntu.com trusty-updates InRelease
+Ign http://archive.ubuntu.com trusty-security InRelease
+Hit http://archive.ubuntu.com trusty Release.gpg
+....snip...
+Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
+Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [134 kB]
+Reading package lists...
+---&gt; eb06e47a01d2
+</code></pre>
+<p>然后，<strong>docker</strong> 安装 <strong>fortunes</strong> 软件：</p>
+<pre><code class="lang-sh">Removing intermediate container e2a84b5f390f
+Step 2 : RUN apt-get install -y fortunes
+ ---&gt; Running in 23aa52c1897c
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following extra packages will be installed:
+  fortune-mod fortunes-min librecode0
+Suggested packages:
+  x11-utils bsdmainutils
+The following NEW packages will be installed:
+  fortune-mod fortunes fortunes-min librecode0
+0 upgraded, 4 newly installed, 0 to remove and 3 not upgraded.
+Need to get 1961 kB of archives.
+After this operation, 4817 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu/ trusty/main librecode0 amd64 3.6-21 [771 kB]
+...snip......
+Setting up fortunes (1:1.99.1-7) ...
+Processing triggers for libc-bin (2.19-0ubuntu6.6) ...
+ ---&gt; c81071adeeb5
+Removing intermediate container 23aa52c1897c
+</code></pre>
+<p>最后，<strong>docker</strong> 完成编译，报告结果：</p>
+<pre><code class="lang-sh">Step 3 : CMD /usr/games/fortune -a | cowsay
+ ---&gt; Running in a8e6faa88df3
+ ---&gt; 7d9495d03763
+Removing intermediate container a8e6faa88df3
+Successfully built 7d9495d03763
+</code></pre>
+<h3 id="-docker-whale">第四步：运行新的 docker-whale</h3>
+<p>现在，来试试新的镜像。</p>
+<ol>
+<li><p>回到控制终端。</p>
+</li>
+<li><p>输入 <code>docker images</code> 命令，按下回车：</p>
+<pre><code class="lang-sh">$ sudo docker images
+REPOSITORY         TAG       IMAGE ID        CREATED         VIRTUAL SIZE
+docker-whale       latest    7d9495d03763    4 minutes ago   273.7 MB
+docker/whalesay    latest    ded5e192a685    7 months ago    247 MB
+hello-world        latest    0a6ba66e537a    3 months ago    960 B
+</code></pre>
+</li>
+<li><p>输入 <code>docker run docker-whale</code> 命令，按下回车：</p>
+<pre><code class="lang-sh">$ sudo docker run docker-whale
+ _________________________________________
+/ &quot;He was a modest, good-humored boy. It  \
+\ was Oxford that made him insufferable.&quot; /
+ -----------------------------------------
+          \
+           \
+            \     
+                          ##        .            
+                    ## ## ##       ==            
+                 ## ## ## ##      ===            
+             /&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;___/ ===        
+        ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+             \______ o          __/            
+              \    \        __/             
+                \____\______/
+</code></pre>
+<p>正如你所看到的，我们已经让鲸鱼变得更加聪明。它会自己说话。你可能也注意到，<em>*docker</em> 不必下载任何东西。那是因为镜像是在本地编译的，并且已经可用。</p>
+</li>
+</ol>
+<p>###</p>
+<h2 id="-hub-">创建一个 Hub 账户和库</h2>
+<p>你已经编译了一些很酷的东西，应该分享它，不是吗？你需要一个 docker Hub 账户。然后，把你的镜像推送到 Hub，让其他人可以运行你的酷玩意。</p>
+<h3 id="-">第一步：注册一个账户</h3>
+<ol>
+<li><p>用你的浏览器进入到 <a href="https://hub.docker.com/?utm_source=getting_started_guide&amp;utm_medium=embedded_Linux&amp;utm_campaign=create_docker_hub_account">docker Hub</a>。</p>
+<p><img src="https://docs.docker.com/tutimg/hub_signup.png" alt="docker Hub"></p>
+</li>
+<li><p>填入你的注册信息。docker Hub 是免费的，只需要一个用户名、密码、电子邮件地址。</p>
+</li>
+<li><p>点击 Signup。</p>
+</li>
+</ol>
+<h3 id="-">第二步：验证你的电子邮件，并加入一个库</h3>
+<p>在 Hub 开始分享前，你需要验证电子邮件。</p>
+<ol>
+<li><p>进入你的邮件收件箱。</p>
+</li>
+<li><p>看看邮件，应该有个 <strong>Please confirm email for your docker Hub account.</strong>。</p>
+</li>
+<li><p>打开邮件，点击确认按钮。</p>
+</li>
+<li><p>选择创建库。</p>
+</li>
+<li><p>输入库名字和描述。</p>
+</li>
+<li><p>确保是公开的。</p>
+<p><img src="https://docs.docker.com/tutimg/add_repository.png" alt="Repository"></p>
+</li>
+<li><p>点击 Create 按钮。恭喜！你创建了一个新库！</p>
+</li>
+</ol>
+<p>###</p>
+<h2 id="-">标签，推送，拉</h2>
+<p>这里，我们聊聊如何给你的库打标签，推送，和拉。</p>
+<h3 id="-">第一步：标签和推送</h3>
+<ol>
+<li><p>返回你的终端。</p>
+</li>
+<li><p>列出当前镜像：</p>
+<pre><code class="lang-sh">$ sudo docker images
+REPOSITORY         TAG       IMAGE ID        CREATED         VIRTUAL SIZE
+docker-whale       latest    7d9495d03763    4 minutes ago   273.7 MB
+docker/whalesay    latest    ded5e192a685    7 months ago    247 MB
+hello-world        latest    0a6ba66e537a    3 months ago    960 B
+</code></pre>
+</li>
+<li><p>看一下 docker-whale 的 <code>IMAGE ID</code> （镜像号）。在这个例子中，是 <code>7d9495d03763</code> 。你应该也注意到，<code>REPOSITORY</code> 显示 <code>docker-whale</code>，但是没有命名空间。你需要在 docker Hub 为它分配命名空间。命名空间是你的账户名。</p>
+</li>
+<li><p>使用 <code>IMAGE ID</code> 和 <code>docker tag</code> 命令，为你的镜像打上标签。</p>
+<ul>
+<li><p><code>docker</code> 告诉操作系统：你正在使用 <strong>docker</strong> 程序</p>
+</li>
+<li><p><code>tag</code> 打上标签</p>
+</li>
+<li><p><code>7d9495d03763</code> 镜像号</p>
+</li>
+<li><p><code>yourname/docker-whale:latest</code> 镜像名</p>
+</li>
+</ul>
+<pre><code class="lang-sh">$ sudo docker tag 7d9495d03763 yourname/docker-whale:latest
+</code></pre>
+</li>
+<li><p>再次列出当前镜像：</p>
+<pre><code class="lang-sh">$ sudo docker images
+REPOSITORY               TAG       IMAGE ID        CREATED         VIRTUAL SIZE
+yourname/docker-whale    latest    7d9495d03763    5 minutes ago   273.7 MB
+docker-whale             latest    7d9495d03763    2 hours ago     273.7 MB
+docker/whalesay          latest    ded5e192a685    7 months ago    247 MB
+hello-world              latest    0a6ba66e537a    3 months ago    960 B
+</code></pre>
+</li>
+<li><p>使用 <code>docker login</code> 命令登录到 docker Hub：</p>
+<pre><code class="lang-sh">$ sudo docker login --username=yourname --email=mary@docker.com
+Password:
+WARNING: login credentials saved in C:\Users\sven\.docker\config.json
+Login Succeeded
+</code></pre>
+</li>
+<li><p>使用 <code>docker push</code> 命令把你的镜像推送到新的库：</p>
+<pre><code class="lang-sh">$ sudo docker push maryatdocker/docker-whale
+The push refers to a repository [maryatdocker/docker-whale] (len: 1)
+7d9495d03763: Image already exists
+c81071adeeb5: Image successfully pushed
+eb06e47a01d2: Image successfully pushed
+fb434121fc77: Image successfully pushed
+5d5bd9951e26: Image successfully pushed
+99da72cfe067: Image successfully pushed
+1722f41ddcb5: Image successfully pushed
+5b74edbcaa5b: Image successfully pushed
+676c4a1897e6: Image successfully pushed
+07f8e8c5e660: Image successfully pushed
+37bea4ee0c81: Image successfully pushed
+a82efea989f9: Image successfully pushed
+e9e06b06e14c: Image successfully pushed
+Digest: sha256:ad89e88beb7dc73bf55d456e2c600e0a39dd6c9500d7cd8d1025626c4b985011
+</code></pre>
+</li>
+<li><p>返回你的 Hub，看看你的新镜像：</p>
+<p><img src="https://docs.docker.com/tutimg/new_image.png" alt="Hub Image"></p>
+</li>
+</ol>
+<h3 id="-">第二步：拉</h3>
+<p>现在，让我们把刚刚推送到 Hub 的镜像拉到本地。在这么做前，你会需要先移除本地机器的原始镜像。如果你没有这么做，<strong>docker</strong> 不会从 Hub 拉。为什么？因为这两个镜像一模一样。</p>
+<ol>
+<li><p>回到终端。</p>
+</li>
+<li><p>输入 <code>docker images</code> 列出当前镜像：</p>
+<pre><code class="lang-sh">$ sudo docker images
+REPOSITORY               TAG       IMAGE ID        CREATED         VIRTUAL SIZE
+yourname/docker-whale    latest    7d9495d03763    5 minutes ago   273.7 MB
+docker-whale             latest    7d9495d03763    2 hours ago     273.7 MB
+docker/whalesay          latest    ded5e192a685    7 months ago    247 MB
+hello-world              latest    0a6ba66e537a    3 months ago    960 B
+</code></pre>
+<p>为了更好的测试，你需要移除 yourname/docker-whale 和 docker-whale。</p>
+</li>
+<li><p>使用 <code>docker rmi</code> 命令移除 yourname/docker-whale 和 docker-whale 镜像---你可以指定一个 ID 移除一个镜像：</p>
+<pre><code class="lang-sh">$ sudo docker rmi -f 7d9495d03763
+$ sudo docker rmi -f docker-whale
+</code></pre>
+</li>
+<li><p>使用 <code>docker pull</code> 命令从你的库拉一个镜像：</p>
+<pre><code class="lang-sh">$ sudo docker pull yourusername/docker-whale
+</code></pre>
+<p>由于镜像在本地已经不可用，<strong>docker</strong> 从 docker Hub 下载：</p>
+<pre><code class="lang-sh">$ docker run maryatdocker/docker-whale
+Unable to find image &#39;maryatdocker/docker-whale:latest&#39; locally
+latest: Pulling from maryatdocker/docker-whale
+eb06e47a01d2: Pull complete
+c81071adeeb5: Pull complete
+7d9495d03763: Already exists
+e9e06b06e14c: Already exists
+a82efea989f9: Already exists
+37bea4ee0c81: Already exists
+07f8e8c5e660: Already exists
+676c4a1897e6: Already exists
+5b74edbcaa5b: Already exists
+1722f41ddcb5: Already exists
+99da72cfe067: Already exists
+5d5bd9951e26: Already exists
+fb434121fc77: Already exists
+Digest: sha256:ad89e88beb7dc73bf55d456e2c600e0a39dd6c9500d7cd8d1025626c4b985011
+Status: Downloaded newer image for maryatdocker/docker-whale:latest
+ ________________________________________
+/ Having wandered helplessly into a      \
+| blinding snowstorm Sam was greatly     |
+| relieved to see a sturdy Saint Bernard |
+| dog bounding toward him with the       |
+| traditional keg of brandy strapped to  |
+| his collar.                            |
+|                                        |
+| &quot;At last,&quot; cried Sam, &quot;man&#39;s best      |
+\ friend -- and a great big dog, too!&quot;   /
+ ----------------------------------------
+                \
+                 \
+                  \
+                          ##        .            
+                    ## ## ##       ==            
+                 ## ## ## ##      ===            
+             /&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;___/ ===        
+        ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+             \______ o          __/            
+              \    \        __/             
+                \____\______/
+</code></pre>
+</li>
+</ol>
+<h3 id="hbhbhh">hbhbhh</h3>
+<p><strong>hhh**</strong></p>
+<p><em>bhbhb</em></p>
+<table>
+<thead>
+<tr>
+<th>ddd</th>
+<th>ddd</th>
+<th>ddd</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ddd</td>
+<td>ddd</td>
+<td>ddd</td>
+</tr>
+<tr>
+<td>ddd</td>
+<td>ddd</td>
+<td>ddd</td>
+</tr>
+</tbody>
+</table>
+<p><del>njnjcn</del></p>
+<p>AT&amp;T has an ampersand in their name.</p>
+<p>AT&amp;T is another way to write it.</p>
+<p>This &amp; that.</p>
+<p>4 &lt; 5.</p>
+<p>6 &gt; 5.</p>
+<p>Here&#39;s a <a href="http://example.com/?foo=1&amp;bar=2">link</a> with an ampersand in the URL.</p>
+<p>Here&#39;s a link with an amersand in the link text: <a href="http://att.com/" title="AT&amp;T">AT&amp;T</a>.</p>
+<p>Here&#39;s an inline <a href="/script?foo=1&amp;bar=2">link</a>.</p>
+<p>Here&#39;s an inline <a href="/script?foo=1&amp;bar=2">link</a>.</p>
+<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>
+<p>With an ampersand: <a href="http://example.com/?foo=1&amp;bar=2">http://example.com/?foo=1&amp;bar=2</a></p>
+<ul>
+<li>In a list?</li>
+<li><a href="http://example.com/">http://example.com/</a></li>
+<li>It should.</li>
+</ul>
+<blockquote>
+<p>Blockquoted: <a href="http://example.com/">http://example.com/</a></p>
+</blockquote>
+<p>Auto-links should not occur here: <code>&lt;http://example.com/&gt;</code></p>
+<pre><code>or here: &lt;http://example.com/&gt;
+</code></pre><p>In Markdown 1.0.0 and earlier. Version</p>
+<ol>
+<li>This line turns into a list item.<br>Because a hard-wrapped line in the<br>middle of a paragraph looked like a<br>list item.</li>
+</ol>
+<p>Here&#39;s one with a bullet.</p>
+<ul>
+<li>criminey.</li>
+</ul>
+<h3 id="hello1">hello1</h3>
+<pre><code class="lang-?">print &quot;hello&quot;
+</code></pre>
+<h3 id="hello2">hello2</h3>
+<pre><code class="lang-python">print &quot;hello&quot;
+</code></pre>

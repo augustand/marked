@@ -1,1 +1,7 @@
 node_modules/
+.idea/marked.iml
+.idea/modules.xml
+.idea/workspace.xml
+
+.idea
+
